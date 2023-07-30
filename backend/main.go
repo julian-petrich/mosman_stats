@@ -60,11 +60,15 @@ func createPlayer(c *gin.Context) {
 
 func main() {
 	router := gin.Default()
-	router.Use(cors.Default())
+	router.Use(cors.New(cors.Config{
+		AllowAllOrigins: true,                               // Allow all origins (for testing purposes, not recommended in production)
+		AllowMethods:    []string{"GET", "POST", "OPTIONS"}, // Add the OPTIONS method here
+		// Add other CORS options if needed
+	}))
 	router.GET("/player", getPlayer)
 	router.GET("/player/:id", playerById)
 	router.POST("/player", createPlayer)
 	//router.PATCH("/checkout", checkoutBook)
 	//router.PATCH("/return", returnBook)
-	router.Run("localhost:8080")
+	router.Run("localhost:8081")
 }
