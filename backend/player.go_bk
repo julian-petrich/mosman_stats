@@ -1,0 +1,58 @@
+package main
+
+import (
+	"errors"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type player struct {
+	ID    string `json:"id"`
+	Name  string `json:"title"`
+	Games string `json:"author"`
+	Goals int    `json:"quantity"`
+}
+
+var players = []player{
+	{ID: "1", Name: "In Search of Lost Time", Games: "Marcel Proust", Goals: 2},
+	{ID: "2", Name: "The Great Gatsby", Games: "F. Scott Fitzgerald", Goals: 5},
+	{ID: "3", Name: "War and Peace", Games: "Leo Tolstoy", Goals: 6},
+}
+
+func getPlayer(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, players)
+}
+
+func playerById(c *gin.Context) {
+	id := c.Param("id")
+	player, err := getPlayerById(id)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Player not found."})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, player)
+}
+
+func getPlayerById(id string) (*player, error) {
+	for i, b := range players {
+		if b.ID == id {
+			return &players[i], nil
+		}
+	}
+
+	return nil, errors.New("player not found")
+}
+
+func createPlayer(c *gin.Context) {
+	var newPlayer player
+
+	if err := c.BindJSON(&newPlayer); err != nil {
+		return
+	}
+
+	players = append(players, newPlayer)
+	c.IndentedJSON(http.StatusCreated, newPlayer)
+}
