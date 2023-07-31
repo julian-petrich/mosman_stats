@@ -1,6 +1,8 @@
-import "./App.css"
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Table, Alert } from 'react-bootstrap';
+import "./App.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
   state = {
@@ -33,45 +35,72 @@ class App extends Component {
         console.error(error);
       });
   }
-
-  render() {
-    const { data, loading, error } = this.state;
+  renderTable(position) {
+    const { data } = this.state;
+    const filteredData = data.filter(item => item.position === position);
 
     return (
-      <div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p>{error}</p>
-      ) : data && data.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Position</th>
-              <th>Games</th>
-              <th>Goals</th>
-              {/* Add more headers for other properties if needed */}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.position}</td>
-                <td>{item.games}</td>
-                <td>{item.goals}</td>
-                {/* Add more cells for other properties if needed */}
+    <div key={position} className={`table-container table-container-${position.toLowerCase()}`}>
+        <h2>{position}</h2>
+        {filteredData.length > 0 ? (
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Games</th>
+                <th>Goals</th>
+                {/* Add more headers for other properties if needed */}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No data found.</p>
-      )}
-    </div>
-  );
-}
+            </thead>
+            <tbody>
+              {filteredData.map((item, index) => (
+                <tr key={index}>
+                   <td>
+                    <a href="https://google.com">
+                      {item.name}
+                    </a>
+                    </td>
+                  <td>{item.games}</td>
+                  <td>{item.goals}</td>
+                  {/* Add more cells for other properties if needed */}
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        ) : (
+          <p>No data found for {position}.</p>
+        )}
+      </div>
+    );
+  }
+
+
+  render() {
+    const { loading, error } = this.state;
+
+    return (
+      <div className="center">
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <Alert variant="danger">{error}</Alert>
+        ) : (
+          <>
+            <div className="image-container">
+              <img src="/mosman_team.jpeg" alt="Image above table" />
+            </div>
+            <div className="table-container-wrapper">
+            {this.renderTable('Goalkeeper')}
+            {this.renderTable('Defender')}
+            {this.renderTable('Midfielder')}
+            {this.renderTable('Forward')}
+            </div>
+
+          </>
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;
