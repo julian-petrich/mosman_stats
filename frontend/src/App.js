@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Table, Alert } from 'react-bootstrap';
+import { Table, Alert, Container } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import "./App.css";
+import NavBar from './routes/NavBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
@@ -56,9 +58,7 @@ class App extends Component {
               {filteredData.map((item, index) => (
                 <tr key={index}>
                    <td>
-                    <a href="https://google.com">
-                      {item.name}
-                    </a>
+                   <Link to={`/player/${item.id}`}>{item.name}</Link>
                     </td>
                   <td>{item.games}</td>
                   <td>{item.goals}</td>
@@ -80,6 +80,7 @@ class App extends Component {
 
     return (
       <div className="center">
+      <NavBar />
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
@@ -87,7 +88,7 @@ class App extends Component {
         ) : (
           <>
             <div className="image-container">
-              <img src="/mosman_team.jpeg" alt="Image above table" />
+              <img src="/mosman_team.jpeg" alt="Mosman Team" />
             </div>
             <div className="table-container-wrapper">
             {this.renderTable('Goalkeeper')}
